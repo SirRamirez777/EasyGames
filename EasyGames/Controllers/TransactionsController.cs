@@ -17,7 +17,7 @@ namespace EasyGames.Controllers
         // GET: Transactions
         public ActionResult Index()
         {
-            var transactions = db.Transactions.Include(t => t.Client);
+            var transactions = db.Transactions.Include(t => t.Client).Include(t => t.TransactionType);
             return View(transactions.ToList());
         }
 
@@ -40,11 +40,13 @@ namespace EasyGames.Controllers
         public ActionResult Create()
         {
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name");
+            ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName");
             return View();
         }
 
         // POST: Transactions/Create
-
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TransactionID,ClientID,Amount,Comment,TransactionTypeID")] Transaction transaction)
@@ -57,6 +59,7 @@ namespace EasyGames.Controllers
             }
 
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
+            ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName", transaction.TransactionTypeID);
             return View(transaction);
         }
 
@@ -73,6 +76,7 @@ namespace EasyGames.Controllers
                 return HttpNotFound();
             }
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
+            ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName", transaction.TransactionTypeID);
             return View(transaction);
         }
 
@@ -90,6 +94,7 @@ namespace EasyGames.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "Name", transaction.ClientID);
+            ViewBag.TransactionTypeID = new SelectList(db.TransactionTypes, "TransactionTypeID", "TransactionTypeName", transaction.TransactionTypeID);
             return View(transaction);
         }
 

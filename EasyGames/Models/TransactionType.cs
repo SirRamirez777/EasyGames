@@ -11,5 +11,8 @@ namespace EasyGames.Models
         [Key]
         public int TransactionTypeID { get; set; }
         public string TransactionTypeName { get; set; }
+
+        // Navigation property for related transactions
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

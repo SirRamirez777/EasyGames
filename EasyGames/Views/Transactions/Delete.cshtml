@@ -20,6 +20,14 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.TransactionType.TransactionTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransactionType.TransactionTypeName)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Amount)
         </dt>
 
@@ -33,14 +41,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.Comment)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransactionTypeID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransactionTypeID)
         </dd>
 
     </dl>

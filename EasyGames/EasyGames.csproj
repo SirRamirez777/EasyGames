@@ -136,6 +136,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
+    <Compile Include="Models\ClientsTransaction.cs" />
     <Compile Include="Models\EasyGamesDatabase.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\TransactionType.cs" />

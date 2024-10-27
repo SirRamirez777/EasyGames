@@ -13,9 +13,12 @@ namespace EasyGames.Models
             public string Name { get; set; }
         public string Surname { get; set; }
         public decimal ClientBalance { get; set; }
-        
 
-       
+        // Navigation property for related transactions
+        public ICollection<Transaction> Transactions { get; set; }
+
+
+
 
     }
 }
