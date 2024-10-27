@@ -1,0 +1,62 @@
+﻿@model EasyGames.Models.Transaction
+
+
+
+
+<h2>Add Transaction</h2>
+@using (Html.BeginForm("AddTransaction", "Transactions", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.ClientID) <!-- Client ID -->
+
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.TransactionTypeID, "Transaction Type")
+            </td>
+            <td>
+                @Html.DropDownListFor(model => model.TransactionTypeID, new SelectList(ViewBag.TransactionTypes, "TransactionTypeID", "TransactionTypeName"), "Select Type")
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Amount)
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Amount)
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Comment)
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.Comment)
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align:center;">
+                <button type="submit">Add Transaction</button>
+            </td>
+        </tr>
+    </table>
+    <script>
+        $.ajax({
+    url: '@Url.Action("GetClientBalance", "Transactions")',
+    type: 'GET',
+    data: { clientId: transaction.ClientID },
+    success: function (response) {
+        $('#clientBalance').text(response.newBalance);
+    },
+    error: function (error) {
+        console.error("Error fetching balance: ", error);
+    }
+});
+
+    </script>
+
+}
+
+

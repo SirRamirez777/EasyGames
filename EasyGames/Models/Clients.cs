@@ -16,9 +16,5 @@ namespace EasyGames.Models
 
         // Navigation property for related transactions
         public ICollection<Transaction> Transactions { get; set; }
-
-
-
-
     }
 }

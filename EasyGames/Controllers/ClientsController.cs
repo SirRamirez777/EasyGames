@@ -12,13 +12,53 @@ namespace EasyGames.Controllers
 {
     public class ClientsController : Controller
     {
-        private EasyGamesDatabase db = new EasyGamesDatabase();
+        private EasyGamesDatabase _context = new EasyGamesDatabase();
 
         // GET: Clients
         public ActionResult Index()
         {
-            return View(db.Clients.ToList());
+            return View(_context.Clients.ToList());
         }
+
+        public ActionResult Transactions(int clientId)
+        {
+            var transactions = _context.Transactions
+                .Where(t => t.ClientID == clientId)
+                .ToList();
+
+            ViewBag.ClientId = clientId;  // Pass ClientId to the view for editing purposes
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public ActionResult EditComment(int transactionId, string newComment)
+        {
+            // Find the transaction by ID
+            var transaction = _context.Transactions.Find(transactionId);
+
+            if (transaction == null)
+            {
+                // Redirect to an error page or show an error message if transaction is not found
+                return RedirectToAction("Error", new { message = "Transaction not found." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(newComment))
+            {
+                // Update the transaction comment
+                transaction.Comment = newComment;
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                // Redirect to the transaction list for the selected client
+                return RedirectToAction("Transactions", new { clientId = transaction.ClientID });
+            }
+
+            // If comment is invalid, reload the same page with an error
+            TempData["ErrorMessage"] = "Comment cannot be empty.";
+            return RedirectToAction("EditTransaction", new { transactionId = transactionId });
+        }
+
 
         // GET: Clients/Details/5
         public ActionResult Details(int? id)
@@ -27,7 +67,7 @@ namespace EasyGames.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Clients clients = db.Clients.Find(id);
+            Clients clients = _context.Clients.Find(id);
             if (clients == null)
             {
                 return HttpNotFound();
@@ -41,17 +81,14 @@ namespace EasyGames.Controllers
             return View();
         }
 
-        // POST: Clients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ClientID,Name,Surname,ClientBalance")] Clients clients)
         {
             if (ModelState.IsValid)
             {
-                db.Clients.Add(clients);
-                db.SaveChanges();
+                _context.Clients.Add(clients);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +102,7 @@ namespace EasyGames.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Clients clients = db.Clients.Find(id);
+            Clients clients = _context.Clients.Find(id);
             if (clients == null)
             {
                 return HttpNotFound();
@@ -82,8 +119,8 @@ namespace EasyGames.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(clients).State = EntityState.Modified;
-                db.SaveChanges();
+                _context.Entry(clients).State = EntityState.Modified;
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(clients);
@@ -96,7 +133,7 @@ namespace EasyGames.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Clients clients = db.Clients.Find(id);
+            Clients clients = _context.Clients.Find(id);
             if (clients == null)
             {
                 return HttpNotFound();
@@ -109,9 +146,9 @@ namespace EasyGames.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Clients clients = db.Clients.Find(id);
-            db.Clients.Remove(clients);
-            db.SaveChanges();
+            Clients clients = _context.Clients.Find(id);
+            _context.Clients.Remove(clients);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +156,7 @@ namespace EasyGames.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _context.Dispose();
             }
             base.Dispose(disposing);
         }

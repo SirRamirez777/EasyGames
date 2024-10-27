@@ -1,0 +1,30 @@
+﻿@model IEnumerable<EasyGames.Models.Transaction>
+@{
+    var clientId = ViewBag.ClientId;
+}
+<h2>Transactions</h2>
+<table>
+    <tr>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Comment</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var transaction in Model)
+    {
+        <tr>
+            <td>@(transaction.TransactionType != null ? transaction.TransactionType.TransactionTypeName : "Unknown Type")</td>
+
+            <td>@transaction.Amount</td>
+            <td>
+                <form asp-action="EditComment" method="post">
+                    <input type="hidden" name="transactionId" value="@transaction.TransactionID" />
+                    <input type="text" name="newComment" value="@transaction.Comment" />
+                    <button type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+
